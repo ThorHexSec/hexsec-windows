@@ -1,0 +1,10 @@
+# HexSec Windows — IDEs, editors & coding CLIs
+
+Anysphere.Cursor
+Microsoft.VisualStudioCode
+Neovim.Neovim
+Notepad++.Notepad++
+Codeblocks.Codeblocks
+Posit.RStudio
+Anthropic.ClaudeCode
+OpenAI.Codex

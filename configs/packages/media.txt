@@ -1,0 +1,6 @@
+# HexSec Windows — media & creative tools
+
+OBSProject.OBSStudio
+Spotify.Spotify
+Audacity.Audacity
+OpenShot.OpenShot

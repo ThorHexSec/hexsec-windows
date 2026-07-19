@@ -1,0 +1,11 @@
+# HexSec Windows — base (core CLI + terminal + archives + password manager)
+# Prompt: Oh My Posh
+
+Git.Git
+GitHub.cli
+7zip.7zip
+RARLab.WinRAR
+Microsoft.WindowsTerminal
+Microsoft.PowerShell
+JanDeDobbeleer.OhMyPosh
+Bitwarden.Bitwarden

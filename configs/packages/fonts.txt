@@ -1,0 +1,4 @@
+# HexSec Windows — developer fonts
+
+DEVCOM.JetBrainsMonoNerdFont
+DEVCOM.MesloLGSNF

@@ -1,0 +1,3 @@
+# Opt-in — Google Cloud SDK (large). Enable only if you need gcloud daily.
+
+Google.CloudSDK

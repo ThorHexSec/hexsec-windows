@@ -1,0 +1,30 @@
+---
+# Full developer-platform install (delegates to PowerShell — single source of truth)
+- name: HexSec Windows — full profile
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Resolve install.ps1 path
+      ansible.builtin.set_fact:
+        hexsec_install_ps1: "{{ hexsec_windows_root }}/install.ps1"
+
+    - name: Build PowerShell arguments
+      ansible.builtin.set_fact:
+        hexsec_ps_args: >-
+          -Module all
+          {% if hexsec_windows_dry_run | bool %}-DryRun{% endif %}
+          {% if hexsec_windows_with_gcp | bool %}-WithGcp{% endif %}
+          {% if hexsec_windows_with_terraform | bool %}-WithTerraform{% endif %}
+
+    - name: Run HexSec Windows installer
+      ansible.windows.win_shell: |
+        Set-ExecutionPolicy -Scope Process Bypass -Force
+        & '{{ hexsec_install_ps1 }}' {{ hexsec_ps_args }}
+      args:
+        executable: powershell.exe
+      register: hexsec_install
+      changed_when: not (hexsec_windows_dry_run | bool)
+
+    - name: Show installer output
+      ansible.builtin.debug:
+        var: hexsec_install.stdout_lines

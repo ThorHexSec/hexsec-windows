@@ -1,0 +1,10 @@
+# HexSec Windows — ignore local noise
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+.ansible/

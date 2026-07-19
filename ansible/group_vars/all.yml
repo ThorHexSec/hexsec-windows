@@ -1,0 +1,4 @@
+---
+hexsec_windows_dry_run: false
+hexsec_windows_with_gcp: false
+hexsec_windows_with_terraform: false

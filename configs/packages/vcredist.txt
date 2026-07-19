@@ -1,0 +1,14 @@
+# HexSec Windows — Visual C++ Redistributables (x64 + x86)
+# Runtime components including MFC/ATL used by many native apps and games.
+# 2015 and 2017 are covered by the unified 2015+ package (binary-compatible VC++ 14.x).
+
+Microsoft.VCRedist.2008.x64
+Microsoft.VCRedist.2008.x86
+Microsoft.VCRedist.2010.x64
+Microsoft.VCRedist.2010.x86
+Microsoft.VCRedist.2012.x64
+Microsoft.VCRedist.2012.x86
+Microsoft.VCRedist.2013.x64
+Microsoft.VCRedist.2013.x86
+Microsoft.VCRedist.2015+.x64
+Microsoft.VCRedist.2015+.x86

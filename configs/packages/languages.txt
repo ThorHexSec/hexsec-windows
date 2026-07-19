@@ -1,0 +1,18 @@
+# HexSec Windows — languages & runtimes
+# .NET 10: Runtime, ASP.NET Core, Desktop Runtime, and SDK
+
+OpenJS.NodeJS.LTS
+pnpm.pnpm
+Python.Python.3.13
+astral-sh.uv
+GoLang.Go
+Rustlang.Rustup
+Microsoft.DotNet.Runtime.10
+Microsoft.DotNet.AspNetCore.10
+Microsoft.DotNet.DesktopRuntime.10
+Microsoft.DotNet.SDK.10
+EclipseAdoptium.Temurin.25.JDK
+RProject.R
+Kitware.CMake
+Ninja-build.Ninja
+LLVM.LLVM

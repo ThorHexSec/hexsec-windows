@@ -1,0 +1,12 @@
+# HexSec Windows — containers & Kubernetes CLIs
+# Docker Desktop is Windows-only (Hyper-V backend). WSL is not used or required.
+# OpenLens is the Kubernetes GUI (open source).
+
+Docker.DockerDesktop
+Kubernetes.kubectl
+Helm.Helm
+Derailed.k9s
+Kubernetes.kind
+MuhammedKalkan.OpenLens
+JesseDuffield.lazydocker
+wagoodman.dive

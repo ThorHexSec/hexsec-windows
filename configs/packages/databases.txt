@@ -1,0 +1,9 @@
+# HexSec Windows — local databases & WAMP stack
+# WAMP = Apache + MySQL + PHP (WampServer). MongoDB + PostgreSQL + SQLite.
+
+Wampserver.Wampserver
+MongoDB.Server
+MongoDB.Shell
+MongoDB.Compass
+PostgreSQL.PostgreSQL.16
+SQLite.SQLite

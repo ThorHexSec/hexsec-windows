@@ -1,0 +1,41 @@
+# HexSec Windows — developer-platform profile
+# Windows 11 Pro workstation: development + light SRE + Steam/RetroArch.
+# Docker Desktop is Windows-only (Hyper-V). WSL is not part of this profile.
+
+name: developer-platform
+version: "1.0.3"
+description: >
+  Windows 11 Pro developer workstation. Modular modules or full install.
+  Docker Desktop runs without WSL (Windows / Hyper-V backend).
+
+core_modules:
+  - privacy
+  - base
+  - vcredist
+  - shell
+  - fonts
+  - browsers
+  - languages
+  - databases
+  - ides
+  - containers
+  - cloud-iac
+  - cyber
+  - productivity
+  - media
+  - virt
+  - gaming
+
+optional_modules:
+  - cloud-gcp
+  - iac-terraform
+
+notes:
+  - Prefer winget; use pip:* only when winget has no suitable package.
+  - pip:* installs unelevated (uv tool / pip --user) even when the installer is elevated.
+  - pip:* packages require the languages module first (uv or Python).
+  - Docker Desktop requires Hyper-V / virtualization — WSL is not used.
+  - Reboot after enabling Docker Desktop or VirtualBox if prompted.
+  - Microsoft Office is user-managed (not installed by this profile).
+  - privacy: registry/Appx hardening in lib/Privacy.ps1 (documented in docs/PRIVACY.md).
+  - Version: 1.0.3 (Semantic Versioning).

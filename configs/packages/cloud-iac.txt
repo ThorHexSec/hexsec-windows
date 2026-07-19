@@ -1,0 +1,18 @@
+# HexSec Windows — cloud CLIs + IaC
+# Default IaC engine: OpenTofu. HashiCorp Terraform is opt-in (iac-terraform).
+# Google Cloud SDK is opt-in (cloud-gcp) — large download.
+
+Amazon.AWSCLI
+Microsoft.AzureCLI
+DigitalOcean.Doctl
+Cloudflare.cloudflared
+OpenTofu.Tofu
+Hashicorp.Packer
+terraform-docs.terraform-docs
+tflint.tflint
+direnv.direnv
+pip:checkov
+pip:pre-commit
+pip:ansible
+pip:ansible-lint
+pip:yamllint

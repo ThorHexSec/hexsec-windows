@@ -1,0 +1,8 @@
+# HexSec Windows — AppSec / network tooling for a developer laptop
+
+WiresharkFoundation.Wireshark
+Insecure.Nmap
+AquaSecurity.Trivy
+gitleaks.gitleaks
+PortSwigger.BurpSuiteCommunity
+mitmproxy.mitmproxy

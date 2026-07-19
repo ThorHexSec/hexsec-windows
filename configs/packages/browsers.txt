@@ -1,0 +1,6 @@
+# HexSec Windows — browsers
+
+Brave.Brave
+Google.Chrome
+Mozilla.Firefox
+Vivaldi.Vivaldi

@@ -1,0 +1,4 @@
+# HexSec Windows — gaming
+
+Valve.Steam
+Libretro.RetroArch

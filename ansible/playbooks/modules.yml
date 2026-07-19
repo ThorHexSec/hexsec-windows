@@ -1,0 +1,27 @@
+---
+# Modular install — pass -e hexsec_windows_modules='["base","ides"]'
+- name: HexSec Windows — selected modules
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Require modules list
+      ansible.builtin.assert:
+        that:
+          - hexsec_windows_modules is defined
+          - hexsec_windows_modules | length > 0
+        fail_msg: "Set -e hexsec_windows_modules='[\"base\",\"shell\"]'"
+
+    - name: Run module installer
+      ansible.windows.win_shell: |
+        Set-ExecutionPolicy -Scope Process Bypass -Force
+        $mods = @({{ hexsec_windows_modules | map('to_json') | join(',') }})
+        $dry = {{ 'true' if hexsec_windows_dry_run | bool else 'false' }}
+        & '{{ hexsec_windows_root }}/install.ps1' -Module $mods -DryRun:$dry
+      args:
+        executable: powershell.exe
+      register: hexsec_mod
+      changed_when: not (hexsec_windows_dry_run | bool)
+
+    - name: Show output
+      ansible.builtin.debug:
+        var: hexsec_mod.stdout_lines

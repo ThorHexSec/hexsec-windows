@@ -1,0 +1,30 @@
+---
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_shell_type: powershell
+      ansible_powershell_exe: powershell.exe
+  vars:
+    hexsec_windows_root: "{{ playbook_dir }}/.."
+    hexsec_windows_dry_run: false
+    hexsec_windows_with_gcp: false
+    hexsec_windows_with_terraform: false
+    # Modules to install when using playbooks/modules.yml
+    hexsec_windows_modules:
+      - privacy
+      - base
+      - vcredist
+      - shell
+      - fonts
+      - browsers
+      - languages
+      - databases
+      - ides
+      - containers
+      - cloud-iac
+      - cyber
+      - productivity
+      - media
+      - virt
+      - gaming
