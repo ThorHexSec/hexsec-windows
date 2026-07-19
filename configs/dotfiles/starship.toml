@@ -1,0 +1,218 @@
+# =============================================================================
+# Starship — HexSec Windows · Night City (Cyberpunk 2077)
+# Palette: chrome #FCEE0A, cyan #00F0FF, magenta #FF2A6D, night #1e1e22
+# Deployed to: %USERPROFILE%\.config\starship.toml
+# Prompt init: Microsoft.PowerShell_profile.ps1 (starship init powershell)
+# Doc: https://starship.rs/config/
+# =============================================================================
+
+add_newline = true
+command_timeout = 2000
+continuation_prompt = "[∷](bold #FCEE0A) "
+palette = "night_city"
+
+[palettes.night_city]
+night = "#1e1e22"
+chrome = "#FCEE0A"
+cyan = "#00F0FF"
+magenta = "#FF2A6D"
+red = "#FF003C"
+green = "#39FF14"
+dim = "#73737c"
+white = "#e8e0ff"
+
+format = """
+[](fg:palette.chrome bg:palette.night)\
+[ NIGHT CITY ](bold fg:palette.night bg:palette.chrome)\
+[](fg:palette.chrome bg:palette.night) \
+$username\
+$hostname\
+$localip\
+$directory\
+$git_branch\
+$git_state\
+$git_status\
+$kubernetes\
+$custom.docker\
+$aws\
+$azure\
+$gcloud\
+$terraform\
+$package\
+$nodejs\
+$python\
+$golang\
+$rust\
+$cmd_duration\
+$jobs\
+$status\
+$line_break\
+$character"""
+
+[username]
+disabled = false
+show_always = true
+style_user = "bold fg:palette.cyan bg:palette.night"
+style_root = "bold fg:palette.red bg:palette.night"
+format = "[$user]($style)"
+
+[hostname]
+ssh_only = true
+style = "bold fg:palette.magenta bg:palette.night"
+format = "[@$hostname]($style) "
+
+[localip]
+disabled = true
+ssh_only = true
+
+[directory]
+truncation_length = 4
+truncate_to_repo = true
+read_only = " "
+read_only_style = "bold fg:palette.red"
+style = "bold fg:palette.chrome bg:#2d2d33"
+before_repo_root_style = "bold fg:palette.dim"
+format = "[ $path ]($style)[$read_only]($read_only_style)"
+repo_root_style = "bold fg:palette.cyan bg:#2d2d33"
+
+[git_branch]
+symbol = " "
+style = "bold fg:palette.magenta"
+format = "on [$symbol$branch]($style) "
+
+[git_state]
+style = "bold fg:palette.red"
+format = '\($state( $progress_current of $progress_total)\) '
+
+[git_status]
+style = "bold fg:palette.chrome"
+conflicted = "="
+ahead = "⇡${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+behind = "⇣${count}"
+stashed = "\\$"
+deleted = "✘"
+renamed = "»"
+modified = "!$count"
+staged = "+$count"
+untracked = "?$count"
+format = '([\[$all_status$ahead_behind\]]($style) )'
+
+[kubernetes]
+symbol = "⎈ "
+style = "bold fg:palette.cyan"
+format = 'on [$symbol$context( \($namespace\))]($style) '
+disabled = false
+
+# Docker Desktop status (Windows profile — Hyper-V, no WSL)
+[custom.docker]
+disabled = false
+description = "Docker engine"
+command = "docker info >nul 2>&1 && echo ready || echo off"
+when = "where docker"
+shell = ["cmd", "/C"]
+symbol = "󰡨 "
+style = "bold fg:palette.cyan"
+format = 'via [$symbol$output]($style) '
+ignore_timeout = true
+
+[aws]
+symbol = "☁️  "
+style = "bold fg:palette.magenta"
+format = 'on [$symbol$profile(\($region\))]($style) '
+disabled = false
+
+[azure]
+symbol = "󰠅 "
+style = "bold fg:palette.cyan"
+format = 'on [$symbol($subscription)]($style) '
+disabled = false
+
+[gcloud]
+symbol = " "
+style = "bold fg:palette.cyan"
+format = 'on [$symbol$account@\($project\)]($style) '
+disabled = false
+
+[terraform]
+symbol = "💠 "
+style = "bold fg:palette.magenta"
+format = 'via [$symbol$workspace]($style) '
+
+[package]
+symbol = "📦 "
+style = "fg:palette.dim"
+format = 'is [$symbol$version]($style) '
+
+[nodejs]
+symbol = " "
+style = "bold fg:palette.green"
+format = 'via [$symbol($version )]($style)'
+
+[python]
+symbol = " "
+style = "bold fg:palette.cyan"
+format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+pyenv_version_name = true
+
+[golang]
+symbol = " "
+style = "bold fg:palette.cyan"
+format = 'via [$symbol($version )]($style)'
+
+[rust]
+symbol = " "
+style = "bold fg:palette.red"
+format = 'via [$symbol($version )]($style)'
+
+[cmd_duration]
+min_time = 2_000
+style = "bold fg:palette.chrome"
+format = "took [$duration]($style) "
+
+[jobs]
+symbol = "✦ "
+style = "bold fg:palette.magenta"
+format = "[$symbol$number]($style) "
+threshold = 1
+symbol_threshold = 1
+
+[status]
+disabled = false
+format = "[$symbol$common_meaning]($style) "
+map_symbol = true
+success_symbol = ""
+not_executable_symbol = "🚫"
+not_found_symbol = "🔍"
+sigint_symbol = "🧱"
+signal_symbol = "⚡"
+style = "bold fg:palette.red"
+
+[character]
+success_symbol = "[▶](bold fg:palette.cyan)"
+error_symbol = "[▶](bold fg:palette.red)"
+vimcmd_symbol = "[◆](bold fg:palette.chrome)"
+vimcmd_replace_one_symbol = "[▲](bold fg:palette.magenta)"
+vimcmd_replace_symbol = "[◆](bold fg:palette.magenta)"
+vimcmd_visual_symbol = "[◇](bold fg:palette.chrome)"
+
+[line_break]
+disabled = false
+
+[time]
+disabled = true
+
+[os]
+disabled = true
+
+[battery]
+disabled = true
+
+[memory_usage]
+disabled = true
+
+[sudo]
+disabled = false
+style = "bold fg:palette.red bg:palette.night"
+symbol = "🗲 "
+format = "[as $symbol]($style)"

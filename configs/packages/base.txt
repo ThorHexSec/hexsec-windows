@@ -1,5 +1,5 @@
 # HexSec Windows — base (core CLI + terminal + archives + password manager)
-# Prompt: Oh My Posh
+# Prompt: Starship (Night City) — Oh My Posh kept as optional fallback theme pack
 
 Git.Git
 GitHub.cli
@@ -7,5 +7,6 @@ GitHub.cli
 RARLab.WinRAR
 Microsoft.WindowsTerminal
 Microsoft.PowerShell
+Starship.Starship
 JanDeDobbeleer.OhMyPosh
 Bitwarden.Bitwarden

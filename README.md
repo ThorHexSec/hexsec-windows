@@ -5,7 +5,7 @@ It provisions a reproducible **developer / SRE workstation** — full profile or
 
 | | |
 |---|---|
-| **Version** | **1.1.1** |
+| **Version** | **1.2.0** |
 | **Target OS** | Windows 11 Pro |
 | **Package managers** | winget (primary) · pip (only when winget has no suitable package) |
 | **Automation** | PowerShell (primary) · Ansible adapter (optional) |
@@ -159,7 +159,8 @@ Sign out or reboot after applying. On Windows 11 Pro, Microsoft may still enforc
 | WinRAR | `RARLab.WinRAR` | RAR archives |
 | Windows Terminal | `Microsoft.WindowsTerminal` | Preferred terminal |
 | PowerShell 7 | `Microsoft.PowerShell` | Modern shell |
-| Oh My Posh | `JanDeDobbeleer.OhMyPosh` | Prompt themes |
+| Starship | `Starship.Starship` | Primary prompt (Night City) |
+| Oh My Posh | `JanDeDobbeleer.OhMyPosh` | Prompt fallback |
 | Bitwarden | `Bitwarden.Bitwarden` | Password manager |
 
 ### 3. `vcredist` — Visual C++ Redistributables (x64 + x86)
@@ -176,7 +177,7 @@ Both architectures are installed. The 2015+ package covers VC++ 14.x including 2
 
 ### 4. `shell` — developer CLIs
 
-Day-to-day shell UX is **PowerShell 7 + Oh My Posh Night City** + Windows Terminal (module `dotfiles`).
+Day-to-day shell UX is **PowerShell 7 + Starship Night City** + Windows Terminal (module `dotfiles`).
 Docs: [docs/dotfiles/](docs/dotfiles/).
 
 | Package | winget ID | Purpose |
@@ -231,7 +232,7 @@ Docs: [docs/dotfiles/](docs/dotfiles/).
 | WampServer | `Wampserver.Wampserver` | Apache + MySQL + PHP |
 | MongoDB Server | `MongoDB.Server` | Document database |
 | MongoDB Shell | `MongoDB.Shell` | `mongosh` |
-| MongoDB Compass | `MongoDB.Compass` | MongoDB GUI |
+| MongoDB Compass Community | `MongoDB.Compass.Community` | MongoDB GUI |
 | PostgreSQL 16 | `PostgreSQL.PostgreSQL.16` | Relational database |
 | SQLite | `SQLite.SQLite` | Embedded SQL |
 
@@ -331,6 +332,8 @@ Even when the installer runs **as Administrator**, these tools are installed **u
 
 | Package | winget ID |
 |---------|-----------|
+| VLC | `VideoLAN.VLC` |
+| K-Lite Codec Pack Mega | `CodecGuide.K-LiteCodecPack.Mega` |
 | OBS Studio | `OBSProject.OBSStudio` |
 | Spotify | `Spotify.Spotify` |
 | Audacity | `Audacity.Audacity` |
@@ -362,7 +365,7 @@ hexsec-windows/
 │   └── Dotfiles.ps1
 ├── configs/
 │   ├── packages/
-│   ├── dotfiles/               ← Oh My Posh + pwsh profile + Windows Terminal Night City
+│   ├── dotfiles/               ← Starship + pwsh profile + Windows Terminal Night City
 │   └── profiles/developer-platform.yml
 ├── scripts/                    ← Install-*.ps1 wrappers (incl. Install-Dotfiles.ps1)
 ├── ansible/
@@ -379,7 +382,7 @@ hexsec-windows/
 ## Post-install checklist
 
 1. **Sign out or reboot** after privacy, Docker Desktop, or VirtualBox changes.
-2. **Shell** — module `dotfiles` deploys PowerShell 7 + Oh My Posh Night City automatically:
+2. **Shell** — module `dotfiles` deploys PowerShell 7 + Starship Night City automatically:
 
    ```powershell
    .\install.ps1 -Module base,fonts,dotfiles
@@ -393,7 +396,7 @@ hexsec-windows/
    ```powershell
    git --version; gh --version; node -v; python --version; uv --version
    go version; rustc --version; java -version; dotnet --list-sdks
-   docker version; kubectl version --client; tofu version; oh-my-posh version
+   docker version; kubectl version --client; tofu version; starship --version
    mongosh --version; psql --version
    ```
 

@@ -1,5 +1,5 @@
 # HexSec Windows — shell / CLI for Windows development
-# Prompt UX is Oh My Posh (base module) + Windows Terminal + PowerShell 7.
+# Prompt UX is Starship (base) + Windows Terminal + PowerShell 7 (module dotfiles).
 
 BurntSushi.ripgrep.MSVC
 sharkdp.fd

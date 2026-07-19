@@ -8,8 +8,8 @@ pass() { echo "PASS  $1"; ok=$((ok + 1)); }
 fail_msg() { echo "FAIL  $1"; fail=$((fail + 1)); }
 
 [[ -f "$ROOT/install.ps1" ]] && pass "install.ps1" || fail_msg "install.ps1"
-grep -q 'HexSecWinVersion = "1.1.1"' "$ROOT/lib/Common.ps1" && pass "version 1.1.1" || fail_msg "version not 1.1.1"
-grep -q '\*\*1.1.1\*\*' "$ROOT/README.md" && pass "README version 1.1.1" || fail_msg "README version"
+grep -q 'HexSecWinVersion = "1.2.0"' "$ROOT/lib/Common.ps1" && pass "version 1.2.0" || fail_msg "version not 1.2.0"
+grep -q '\*\*1.2.0\*\*' "$ROOT/README.md" && pass "README version 1.2.0" || fail_msg "README version"
 [[ -f "$ROOT/CHANGELOG.md" ]] && pass "CHANGELOG.md" || fail_msg "CHANGELOG.md"
 grep -qi 'no WSL\|Windows-only\|Hyper-V' "$ROOT/README.md" && pass "Docker Windows-only docs" || fail_msg "missing Docker Windows-only note"
 ! grep -q 'EnableWsl' "$ROOT/install.ps1" && pass "EnableWsl removed" || fail_msg "EnableWsl still present"
@@ -69,15 +69,17 @@ grep -q 'Remove-HexSecCopilot' "$ROOT/lib/Privacy.ps1" && pass "Copilot removal"
 grep -q 'NoRecentDocsHistory' "$ROOT/lib/Privacy.ps1" && pass "NoRecentDocsHistory" || fail_msg "NoRecentDocsHistory missing"
 grep -q 'TurnOffWindowsCopilot' "$ROOT/lib/Privacy.ps1" && pass "TurnOffWindowsCopilot" || fail_msg "TurnOffWindowsCopilot missing"
 
-# Dotfiles (PowerShell 7 + Oh My Posh)
+# Dotfiles (PowerShell 7 + Starship + Windows Terminal)
 [[ -f "$ROOT/lib/Dotfiles.ps1" ]] && pass "lib/Dotfiles.ps1" || fail_msg "Dotfiles.ps1"
 [[ -f "$ROOT/scripts/Install-Dotfiles.ps1" ]] && pass "Install-Dotfiles.ps1" || fail_msg "Install-Dotfiles.ps1"
 [[ -f "$ROOT/configs/dotfiles/night-city.omp.json" ]] && pass "night-city.omp.json" || fail_msg "omp theme"
+[[ -f "$ROOT/configs/dotfiles/starship.toml" ]] && pass "starship.toml" || fail_msg "starship.toml"
 [[ -f "$ROOT/configs/dotfiles/Microsoft.PowerShell_profile.ps1" ]] && pass "pwsh profile" || fail_msg "pwsh profile"
 [[ -f "$ROOT/configs/dotfiles/windows-terminal-night-city.json" ]] && pass "wt night-city scheme" || fail_msg "wt scheme"
 [[ -f "$ROOT/configs/dotfiles/windows-terminal-fragment.json" ]] && pass "wt fragment" || fail_msg "wt fragment"
 [[ -f "$ROOT/docs/dotfiles/README.md" ]] && pass "docs/dotfiles" || fail_msg "docs/dotfiles"
 [[ -f "$ROOT/docs/dotfiles/profile.md" ]] && pass "docs profile" || fail_msg "docs profile"
+[[ -f "$ROOT/docs/dotfiles/starship.md" ]] && pass "docs starship" || fail_msg "docs starship"
 [[ -f "$ROOT/docs/dotfiles/oh-my-posh.md" ]] && pass "docs oh-my-posh" || fail_msg "docs oh-my-posh"
 [[ -f "$ROOT/docs/dotfiles/windows-terminal.md" ]] && pass "docs windows-terminal" || fail_msg "docs windows-terminal"
 [[ -f "$ROOT/docs/modules/dotfiles.md" ]] && pass "docs modules/dotfiles" || fail_msg "docs modules/dotfiles"
@@ -85,12 +87,23 @@ grep -q 'dotfiles' "$ROOT/install.ps1" && pass "dotfiles in install.ps1" || fail
 grep -q 'Install-HexSecDotfiles' "$ROOT/lib/Dotfiles.ps1" && pass "Install-HexSecDotfiles" || fail_msg "Install-HexSecDotfiles"
 grep -q 'Merge-HexSecWindowsTerminalSettings' "$ROOT/lib/Dotfiles.ps1" && pass "WT merge function" || fail_msg "WT merge"
 grep -q 'NIGHT CITY' "$ROOT/configs/dotfiles/night-city.omp.json" && pass "Night City theme" || fail_msg "Night City theme"
+grep -q 'palette = "night_city"' "$ROOT/configs/dotfiles/starship.toml" && pass "Starship Night City" || fail_msg "starship palette"
+grep -q 'custom.docker' "$ROOT/configs/dotfiles/starship.toml" && pass "Starship docker module" || fail_msg "starship docker"
 grep -q 'HEXSEC_IDENTITY' "$ROOT/configs/dotfiles/Microsoft.PowerShell_profile.ps1" && pass "profile identity" || fail_msg "profile identity"
-grep -q 'oh-my-posh init pwsh' "$ROOT/configs/dotfiles/Microsoft.PowerShell_profile.ps1" && pass "omp init in profile" || fail_msg "omp init"
+grep -q 'starship init powershell' "$ROOT/configs/dotfiles/Microsoft.PowerShell_profile.ps1" && pass "starship init in profile" || fail_msg "starship init"
 grep -q 'FCEE0A' "$ROOT/configs/dotfiles/night-city.omp.json" && pass "Night City chrome color" || fail_msg "theme colors"
 grep -q '1E1E22' "$ROOT/configs/dotfiles/windows-terminal-night-city.json" && pass "WT Ghostty background" || fail_msg "WT bg"
 grep -q '00F0FF' "$ROOT/configs/dotfiles/windows-terminal-night-city.json" && pass "WT Ghostty cyan" || fail_msg "WT cyan"
 grep -q 'opacity' "$ROOT/lib/Dotfiles.ps1" && pass "WT opacity defaults" || fail_msg "WT opacity"
+grep -q 'Starship.Starship' "$ROOT/configs/packages/base.txt" && pass "Starship winget" || fail_msg "Starship package"
+grep -q 'VideoLAN.VLC' "$ROOT/configs/packages/media.txt" && pass "VLC" || fail_msg "VLC missing"
+grep -q 'CodecGuide.K-LiteCodecPack.Mega' "$ROOT/configs/packages/media.txt" && pass "K-Lite Mega" || fail_msg "K-Lite missing"
+grep -q 'MongoDB.Compass.Community' "$ROOT/configs/packages/databases.txt" && pass "Compass Community" || fail_msg "Compass Community"
+if grep -qE '^MongoDB\.Compass$' "$ROOT/configs/packages/databases.txt"; then
+  fail_msg "old MongoDB.Compass ID still present"
+else
+  pass "no non-Community Compass ID"
+fi
 
 grep -q 'Invoke-HexSecUnelevatedScript' "$ROOT/lib/Common.ps1" && pass "unelevated pip helper" || fail_msg "missing unelevated pip helper"
 grep -q 'trustlevel:0x20000' "$ROOT/lib/Common.ps1" && pass "medium-integrity de-elevation" || fail_msg "missing runas trustlevel"

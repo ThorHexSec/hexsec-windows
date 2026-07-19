@@ -4,12 +4,12 @@
   HexSec Windows installer — full profile or modular modules.
 
 .DESCRIPTION
-  Entrypoint for Windows 11 Pro (HexSec Windows 1.1.1).
+  Entrypoint for Windows 11 Pro (HexSec Windows 1.2.0).
   Installs curated development tooling via winget (primary), with pip/uv only
   when a package has no suitable winget ID. pip:* and user-scope CLIs (Claude Code,
   Codex) always run unelevated. Docker Desktop is Windows-only (Hyper-V) — WSL is not used.
   Full run: .\install.ps1  (or .\scripts\Install-All.ps1).
-  Dotfiles: PowerShell 7 + Oh My Posh + Windows Terminal Night City (Ghostty-aligned).
+  Dotfiles: PowerShell 7 + Starship Night City + Windows Terminal (Ghostty-aligned).
 #>
 [CmdletBinding()]
 param(
@@ -46,22 +46,22 @@ HexSec Windows v$script:HexSecWinVersion — modules
 
   CORE (developer-platform):
     privacy       Telemetry ↓ · Sticky Keys off · Explorer Recents off · Copilot uninstall
-    base          Git, GitHub CLI, 7-Zip, WinRAR, Windows Terminal, PowerShell 7, Oh My Posh, Bitwarden
+    base          Git, GitHub CLI, 7-Zip, WinRAR, Windows Terminal, PowerShell 7, Starship, Oh My Posh, Bitwarden
     vcredist      VC++ Redistributables x64+x86 (2008, 2010, 2012, 2013, 2015+/2017 MFC·ATL)
     shell         ripgrep, fd, jq, yq, lazygit, FFmpeg
     fonts         JetBrains Mono Nerd + Meslo Nerd
     browsers      Brave, Chrome, Firefox, Vivaldi
     languages     Node LTS, pnpm, Python, uv, Go, Rust, .NET 10, JDK 25 LTS, R, CMake/Ninja/LLVM
-    databases     WampServer, MongoDB + Shell + Compass, PostgreSQL 16, SQLite
+    databases     WampServer, MongoDB + Shell + Compass Community, PostgreSQL 16, SQLite
     ides          Cursor, VS Code, Neovim, Notepad++, Code::Blocks, RStudio, Claude Code, Codex
     containers    Docker Desktop (Windows-only / Hyper-V — no WSL), kubectl, helm, k9s, kind, OpenLens, …
     cloud-iac     AWS CLI, Azure CLI, doctl, cloudflared, OpenTofu, Packer, checkov, Ansible (pip)
     cyber         Wireshark, nmap, Trivy, gitleaks, Burp Community, mitmproxy
     productivity  Obsidian, draw.io, DBeaver, Discord, AnyDesk, Proton Pass, Proton VPN, Lightshot
-    media         OBS Studio, Spotify, Audacity, OpenShot
+    media         VLC, K-Lite Mega, OBS, Spotify, Audacity, OpenShot
     virt          VirtualBox
     gaming        Steam, RetroArch
-    dotfiles      PowerShell 7 + Oh My Posh + Windows Terminal Night City (0xH3xS3C)
+    dotfiles      PowerShell 7 + Starship Night City + Windows Terminal (0xH3xS3C)
 
   OPT-IN:
     cloud-gcp       Google Cloud SDK (large)
@@ -131,4 +131,4 @@ foreach ($m in $toInstall) {
     }
 }
 
-Write-HexSecOk "Done. Open a new pwsh session for Oh My Posh. See README.md / docs/dotfiles/."
+Write-HexSecOk "Done. Open a new pwsh session for Starship. See README.md / docs/dotfiles/."

@@ -11,7 +11,7 @@ if (-not (Test-Path (Join-Path $script:HexSecWinRoot "configs"))) {
     }
 }
 
-$script:HexSecWinVersion = "1.1.1"
+$script:HexSecWinVersion = "1.2.0"
 $script:HexSecWinDryRun = $false
 
 # CLIs that must install into the interactive user profile (not elevated / not machine-wide).

@@ -1,11 +1,12 @@
 # Dotfiles documentation
 
-PowerShell 7, Oh My Posh, and Windows Terminal — Night City (aligned with HexSec macOS Ghostty).
+PowerShell 7, Starship, Oh My Posh (fallback), and Windows Terminal — Night City (aligned with HexSec macOS).
 
 | Doc | Content |
 |-----|---------|
 | [profile.md](profile.md) | PowerShell 7 profile |
-| [oh-my-posh.md](oh-my-posh.md) | Oh My Posh Night City theme |
+| [starship.md](starship.md) | Starship Night City (primary prompt) |
+| [oh-my-posh.md](oh-my-posh.md) | Oh My Posh Night City (fallback) |
 | [windows-terminal.md](windows-terminal.md) | Windows Terminal colors / opacity / font |
 
 ## Install

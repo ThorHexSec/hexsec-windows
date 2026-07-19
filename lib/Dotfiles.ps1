@@ -223,19 +223,22 @@ function Merge-HexSecWindowsTerminalSettings {
 function Install-HexSecDotfiles {
     <#
     .SYNOPSIS
-      Deploys Oh My Posh Night City theme, PowerShell 7 profile, and Windows Terminal colors
-      aligned with HexSec macOS Ghostty.
+      Deploys Starship Night City, Oh My Posh fallback theme, PowerShell 7 profile,
+      and Windows Terminal colors aligned with HexSec macOS Ghostty.
     #>
     Write-HexSecInfo "=== Module: dotfiles ==="
 
     $src = Get-HexSecDotfilesSourceDir
     $themeSrc = Join-Path $src 'night-city.omp.json'
+    $starshipSrc = Join-Path $src 'starship.toml'
     $profileSrc = Join-Path $src 'Microsoft.PowerShell_profile.ps1'
     $wtSchemeSrc = Join-Path $src 'windows-terminal-night-city.json'
     $wtFragmentSrc = Join-Path $src 'windows-terminal-fragment.json'
 
     $hexsecRoot = Join-Path $env:USERPROFILE '.config\hexsec'
     $themeDst = Join-Path $hexsecRoot 'oh-my-posh\night-city.omp.json'
+    $starshipDst = Join-Path $env:USERPROFILE '.config\starship.toml'
+    $starshipCopy = Join-Path $hexsecRoot 'starship.toml'
     $wtSchemeDst = Join-Path $hexsecRoot 'windows-terminal\night-city.json'
 
     $docsPs = Get-HexSecPwshDocumentsDir
@@ -244,6 +247,8 @@ function Install-HexSecDotfiles {
 
     Install-HexSecFileIfChanged -Source $themeSrc -Destination $themeDst | Out-Null
     Install-HexSecFileIfChanged -Source $themeSrc -Destination $themeCopyInDocs | Out-Null
+    Install-HexSecFileIfChanged -Source $starshipSrc -Destination $starshipDst | Out-Null
+    Install-HexSecFileIfChanged -Source $starshipSrc -Destination $starshipCopy | Out-Null
     Install-HexSecFileIfChanged -Source $profileSrc -Destination $profileDst | Out-Null
     Install-HexSecFileIfChanged -Source $wtSchemeSrc -Destination $wtSchemeDst | Out-Null
 
@@ -270,13 +275,16 @@ function Install-HexSecDotfiles {
 
     Set-HexSecExecutionPolicyCurrentUser
 
+    if (-not (Get-Command starship -ErrorAction SilentlyContinue) -and -not $script:HexSecWinDryRun) {
+        Write-HexSecWarn "starship not on PATH yet — install base module (Starship.Starship) and open a new terminal"
+    }
     if (-not (Get-Command oh-my-posh -ErrorAction SilentlyContinue) -and -not $script:HexSecWinDryRun) {
-        Write-HexSecWarn "oh-my-posh not on PATH yet — install base module and open a new terminal"
+        Write-HexSecWarn "oh-my-posh not on PATH (optional fallback) — install base module"
     }
     if (-not (Get-Command pwsh -ErrorAction SilentlyContinue) -and -not $script:HexSecWinDryRun) {
         Write-HexSecWarn "pwsh not on PATH yet — install base module (Microsoft.PowerShell)"
     }
 
-    Write-HexSecOk "Dotfiles deployed (PowerShell 7 · Oh My Posh · Windows Terminal Night City)"
-    Write-HexSecInfo "Restart Windows Terminal to load the Night City theme (Ghostty-aligned)."
+    Write-HexSecOk "Dotfiles deployed (PowerShell 7 · Starship · Windows Terminal Night City)"
+    Write-HexSecInfo "Restart Windows Terminal / pwsh to load Starship + Night City theme."
 }

@@ -1,6 +1,7 @@
 # HexSec Windows — PowerShell 7 profile (0xH3xS3C / Night City)
 # Deployed to: Documents\PowerShell\Microsoft.PowerShell_profile.ps1
-# Requires: PowerShell 7, Oh My Posh, JetBrains Mono Nerd Font
+# Requires: PowerShell 7, Starship, JetBrains Mono Nerd Font
+# Optional: Oh My Posh (fallback if starship is missing)
 
 # ---------------------------------------------------------------------------
 # Identity
@@ -13,19 +14,32 @@ $env:HEXSEC_ROOT = if ($env:HEXSEC_ROOT) { $env:HEXSEC_ROOT } else {
 }
 
 # ---------------------------------------------------------------------------
-# Oh My Posh — Night City
+# Starship — Night City (primary prompt; parity with HexSec macOS)
 # ---------------------------------------------------------------------------
-$HexSecPoshTheme = Join-Path $env:HEXSEC_ROOT 'oh-my-posh\night-city.omp.json'
-if (-not (Test-Path -LiteralPath $HexSecPoshTheme)) {
-    $HexSecPoshTheme = Join-Path $PSScriptRoot 'Themes\night-city.omp.json'
+$HexSecStarship = Join-Path $env:USERPROFILE '.config\starship.toml'
+if (-not (Test-Path -LiteralPath $HexSecStarship)) {
+    $HexSecStarship = Join-Path $env:HEXSEC_ROOT 'starship.toml'
+}
+if (Test-Path -LiteralPath $HexSecStarship) {
+    $env:STARSHIP_CONFIG = $HexSecStarship
 }
 
-if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-    if (Test-Path -LiteralPath $HexSecPoshTheme) {
-        oh-my-posh init pwsh --config $HexSecPoshTheme | Invoke-Expression
+if (Get-Command starship -ErrorAction SilentlyContinue) {
+    Invoke-Expression (& starship init powershell)
+}
+else {
+    # Fallback: Oh My Posh Night City
+    $HexSecPoshTheme = Join-Path $env:HEXSEC_ROOT 'oh-my-posh\night-city.omp.json'
+    if (-not (Test-Path -LiteralPath $HexSecPoshTheme)) {
+        $HexSecPoshTheme = Join-Path $PSScriptRoot 'Themes\night-city.omp.json'
     }
-    elseif ($env:POSH_THEMES_PATH -and (Test-Path (Join-Path $env:POSH_THEMES_PATH 'paradox.omp.json'))) {
-        oh-my-posh init pwsh --config (Join-Path $env:POSH_THEMES_PATH 'paradox.omp.json') | Invoke-Expression
+    if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
+        if (Test-Path -LiteralPath $HexSecPoshTheme) {
+            oh-my-posh init pwsh --config $HexSecPoshTheme | Invoke-Expression
+        }
+        elseif ($env:POSH_THEMES_PATH -and (Test-Path (Join-Path $env:POSH_THEMES_PATH 'paradox.omp.json'))) {
+            oh-my-posh init pwsh --config (Join-Path $env:POSH_THEMES_PATH 'paradox.omp.json') | Invoke-Expression
+        }
     }
 }
 
@@ -142,7 +156,7 @@ if ($Host.Name -eq 'ConsoleHost' -or $Host.Name -eq 'Visual Studio Code Host' -o
     if (-not $env:HEXSEC_BANNER_SHOWN) {
         $env:HEXSEC_BANNER_SHOWN = '1'
         Write-Host ''
-        Write-Host '  ░▒▓█ 0xH3xS3C Windows // 0xZ3r0VO1D // Oh My Posh █▓▒░' -ForegroundColor Cyan
+        Write-Host '  ░▒▓█ 0xH3xS3C Windows // 0xZ3r0VO1D // Starship Night City █▓▒░' -ForegroundColor Cyan
         Write-Host '  ─────────────────────────────────────────────────────' -ForegroundColor DarkGray
         Write-Host ("  {0}@{1} · PowerShell {2}" -f $env:USERNAME, $env:COMPUTERNAME, $PSVersionTable.PSVersion) -ForegroundColor Yellow
         Write-Host '  [net] ready  [gitops] ready  [ai] ready  [docker] desktop' -ForegroundColor DarkCyan

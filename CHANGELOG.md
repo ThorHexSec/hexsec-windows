@@ -5,6 +5,18 @@ All notable changes to **HexSec Windows** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] — 2026-07-19
+
+### Added
+
+- **Starship** (`Starship.Starship`) as primary PowerShell prompt; Night City `starship.toml` via module `dotfiles`.
+- Media: **VLC** (`VideoLAN.VLC`), **K-Lite Codec Pack Mega** (`CodecGuide.K-LiteCodecPack.Mega`).
+
+### Changed
+
+- MongoDB GUI: `MongoDB.Compass` → **`MongoDB.Compass.Community`**.
+- PowerShell profile prefers Starship; Oh My Posh Night City remains as fallback.
+
 ## [1.1.1] — 2026-07-19
 
 ### Added

@@ -1,6 +1,9 @@
-# Oh My Posh — Night City
+# Oh My Posh — Night City (fallback)
 
 # Overview
+
+Optional prompt theme used when **Starship** is not on PATH.  
+Primary prompt is Starship — see [starship.md](starship.md).
 
 Theme source: `configs/dotfiles/night-city.omp.json`
 

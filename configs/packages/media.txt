@@ -1,5 +1,7 @@
 # HexSec Windows — media & creative tools
 
+VideoLAN.VLC
+CodecGuide.K-LiteCodecPack.Mega
 OBSProject.OBSStudio
 Spotify.Spotify
 Audacity.Audacity

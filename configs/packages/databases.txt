@@ -4,6 +4,6 @@
 Wampserver.Wampserver
 MongoDB.Server
 MongoDB.Shell
-MongoDB.Compass
+MongoDB.Compass.Community
 PostgreSQL.PostgreSQL.16
 SQLite.SQLite
