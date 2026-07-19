@@ -5,7 +5,7 @@ It provisions a reproducible **developer / SRE workstation** — full profile or
 
 | | |
 |---|---|
-| **Version** | **1.0.3** |
+| **Version** | **1.1.1** |
 | **Target OS** | Windows 11 Pro |
 | **Package managers** | winget (primary) · pip (only when winget has no suitable package) |
 | **Automation** | PowerShell (primary) · Ansible adapter (optional) |
@@ -176,7 +176,8 @@ Both architectures are installed. The 2015+ package covers VC++ 14.x including 2
 
 ### 4. `shell` — developer CLIs
 
-Day-to-day shell UX is PowerShell 7 + Oh My Posh + Windows Terminal.
+Day-to-day shell UX is **PowerShell 7 + Oh My Posh Night City** + Windows Terminal (module `dotfiles`).
+Docs: [docs/dotfiles/](docs/dotfiles/).
 
 | Package | winget ID | Purpose |
 |---------|-----------|---------|
@@ -238,16 +239,18 @@ Use **DBeaver** (productivity) for MySQL/PostgreSQL GUIs.
 
 ### 9. `ides` — editors & coding CLIs
 
-| Package | winget ID |
-|---------|-----------|
-| Cursor | `Anysphere.Cursor` |
-| Visual Studio Code | `Microsoft.VisualStudioCode` |
-| Neovim | `Neovim.Neovim` |
-| Notepad++ | `Notepad++.Notepad++` |
-| Code::Blocks | `Codeblocks.Codeblocks` |
-| RStudio | `Posit.RStudio` |
-| Claude Code | `Anthropic.ClaudeCode` |
-| Codex | `OpenAI.Codex` |
+| Package | winget ID | Notes |
+|---------|-----------|-------|
+| Cursor | `Anysphere.Cursor` | |
+| Visual Studio Code | `Microsoft.VisualStudioCode` | |
+| Neovim | `Neovim.Neovim` | |
+| Notepad++ | `Notepad++.Notepad++` | |
+| Code::Blocks | `Codeblocks.Codeblocks` | |
+| RStudio | `Posit.RStudio` | |
+| Claude Code | `Anthropic.ClaudeCode` | User-scope (unelevated); native installer fallback |
+| Codex | `OpenAI.Codex` | User-scope (unelevated); `npm i -g @openai/codex` fallback |
+
+Claude Code and Codex are installed for the **interactive user**, not machine-wide as Administrator (official docs: do not require Admin; portable/user CLIs fail or vanish when forced elevated).
 
 ### 10. `containers` — Docker & Kubernetes
 
@@ -352,45 +355,38 @@ Even when the installer runs **as Administrator**, these tools are installed **u
 
 ```
 hexsec-windows/
-├── README.md
-├── CHANGELOG.md
-├── LICENSE · AUTHORS · CONTRIBUTING.md
-├── install.ps1                 ← full / modular entrypoint
+├── install.ps1
 ├── lib/
-│   ├── Common.ps1              ← winget / pip helpers, dry-run
-│   └── Privacy.ps1             ← privacy hardening
+│   ├── Common.ps1
+│   ├── Privacy.ps1
+│   └── Dotfiles.ps1
 ├── configs/
-│   ├── packages/               ← winget IDs only
-│   └── profiles/
-│       └── developer-platform.yml
-├── scripts/                    ← thin per-module wrappers
+│   ├── packages/
+│   ├── dotfiles/               ← Oh My Posh + pwsh profile + Windows Terminal Night City
+│   └── profiles/developer-platform.yml
+├── scripts/                    ← Install-*.ps1 wrappers (incl. Install-Dotfiles.ps1)
 ├── ansible/
-│   ├── requirements.yml
-│   ├── inventories/localhost.yml
-│   ├── group_vars/all.yml
-│   └── playbooks/
-│       ├── full.yml
-│       └── modules.yml
 ├── docs/
 │   ├── MODULES.md
-│   └── PRIVACY.md
-└── tests/
-    └── test-structure.sh
+│   ├── PRIVACY.md
+│   ├── modules/dotfiles.md
+│   └── dotfiles/
+└── tests/test-structure.sh
 ```
 
 ---
 
 ## Post-install checklist
 
-1. **Sign out or reboot** after privacy, Docker Desktop, or VirtualBox changes.  
-2. Initialize **Oh My Posh** in your PowerShell profile:
+1. **Sign out or reboot** after privacy, Docker Desktop, or VirtualBox changes.
+2. **Shell** — module `dotfiles` deploys PowerShell 7 + Oh My Posh Night City automatically:
 
    ```powershell
-   # $PROFILE
-   oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\paradox.omp.json" | Invoke-Expression
+   .\install.ps1 -Module base,fonts,dotfiles
+   pwsh
    ```
 
-   List themes: `Get-PoshThemes`.
+   Docs: [docs/dotfiles/](docs/dotfiles/). Windows Terminal gets the Night City scheme automatically (Ghostty-aligned).
 
 3. Confirm key tools:
 
@@ -401,9 +397,9 @@ hexsec-windows/
    mongosh --version; psql --version
    ```
 
-4. Start **WampServer** when you need Apache/MySQL/PHP. Confirm MongoDB and PostgreSQL services if applicable.  
-5. Sign in to Bitwarden, Steam, browsers, and IDEs as needed.  
-6. Install **Microsoft Office** and **Yaak** manually if you use them.  
+4. Start **WampServer** when you need Apache/MySQL/PHP. Confirm MongoDB and PostgreSQL services if applicable.
+5. Sign in to Bitwarden, Steam, browsers, and IDEs as needed.
+6. Install **Microsoft Office** and **Yaak** manually if you use them.
 7. In Docker Desktop settings, keep the **WSL 2 based engine** disabled — this profile is Windows / Hyper-V only.
 
 ---
@@ -425,7 +421,7 @@ hexsec-windows/
 | Access denied | Run PowerShell **as Administrator** |
 | Docker engine will not start | Enable virtualization + Hyper-V; do not rely on WSL; reboot |
 | `pip:*` skipped | Install `languages` first so `uv` or `python` is on `PATH` |
-| `pip:*` fails under Admin | HexSec already de-elevates pip/uv; open a **new** unelevated terminal and confirm `uv tool list` / `python -m pip show <pkg>` |
+| Claude Code / Codex missing after full install | Re-run `.\install.ps1 -Module ides` (1.0.4+ installs them unelevated). Open a **new** terminal and run `claude --version` / `codex --version` |
 | Package ID not found | Run `winget search <name>` and update the `.txt` file |
 | Execution policy | `Set-ExecutionPolicy -Scope Process Bypass -Force` |
 | Copilot or Recents return after upgrade | Re-run `.\install.ps1 -Module privacy` |

@@ -8,8 +8,8 @@ pass() { echo "PASS  $1"; ok=$((ok + 1)); }
 fail_msg() { echo "FAIL  $1"; fail=$((fail + 1)); }
 
 [[ -f "$ROOT/install.ps1" ]] && pass "install.ps1" || fail_msg "install.ps1"
-grep -q 'HexSecWinVersion = "1.0.3"' "$ROOT/lib/Common.ps1" && pass "version 1.0.3" || fail_msg "version not 1.0.3"
-grep -q '\*\*1.0.3\*\*' "$ROOT/README.md" && pass "README version 1.0.3" || fail_msg "README version"
+grep -q 'HexSecWinVersion = "1.1.1"' "$ROOT/lib/Common.ps1" && pass "version 1.1.1" || fail_msg "version not 1.1.1"
+grep -q '\*\*1.1.1\*\*' "$ROOT/README.md" && pass "README version 1.1.1" || fail_msg "README version"
 [[ -f "$ROOT/CHANGELOG.md" ]] && pass "CHANGELOG.md" || fail_msg "CHANGELOG.md"
 grep -qi 'no WSL\|Windows-only\|Hyper-V' "$ROOT/README.md" && pass "Docker Windows-only docs" || fail_msg "missing Docker Windows-only note"
 ! grep -q 'EnableWsl' "$ROOT/install.ps1" && pass "EnableWsl removed" || fail_msg "EnableWsl still present"
@@ -69,9 +69,37 @@ grep -q 'Remove-HexSecCopilot' "$ROOT/lib/Privacy.ps1" && pass "Copilot removal"
 grep -q 'NoRecentDocsHistory' "$ROOT/lib/Privacy.ps1" && pass "NoRecentDocsHistory" || fail_msg "NoRecentDocsHistory missing"
 grep -q 'TurnOffWindowsCopilot' "$ROOT/lib/Privacy.ps1" && pass "TurnOffWindowsCopilot" || fail_msg "TurnOffWindowsCopilot missing"
 
+# Dotfiles (PowerShell 7 + Oh My Posh)
+[[ -f "$ROOT/lib/Dotfiles.ps1" ]] && pass "lib/Dotfiles.ps1" || fail_msg "Dotfiles.ps1"
+[[ -f "$ROOT/scripts/Install-Dotfiles.ps1" ]] && pass "Install-Dotfiles.ps1" || fail_msg "Install-Dotfiles.ps1"
+[[ -f "$ROOT/configs/dotfiles/night-city.omp.json" ]] && pass "night-city.omp.json" || fail_msg "omp theme"
+[[ -f "$ROOT/configs/dotfiles/Microsoft.PowerShell_profile.ps1" ]] && pass "pwsh profile" || fail_msg "pwsh profile"
+[[ -f "$ROOT/configs/dotfiles/windows-terminal-night-city.json" ]] && pass "wt night-city scheme" || fail_msg "wt scheme"
+[[ -f "$ROOT/configs/dotfiles/windows-terminal-fragment.json" ]] && pass "wt fragment" || fail_msg "wt fragment"
+[[ -f "$ROOT/docs/dotfiles/README.md" ]] && pass "docs/dotfiles" || fail_msg "docs/dotfiles"
+[[ -f "$ROOT/docs/dotfiles/profile.md" ]] && pass "docs profile" || fail_msg "docs profile"
+[[ -f "$ROOT/docs/dotfiles/oh-my-posh.md" ]] && pass "docs oh-my-posh" || fail_msg "docs oh-my-posh"
+[[ -f "$ROOT/docs/dotfiles/windows-terminal.md" ]] && pass "docs windows-terminal" || fail_msg "docs windows-terminal"
+[[ -f "$ROOT/docs/modules/dotfiles.md" ]] && pass "docs modules/dotfiles" || fail_msg "docs modules/dotfiles"
+grep -q 'dotfiles' "$ROOT/install.ps1" && pass "dotfiles in install.ps1" || fail_msg "dotfiles missing from install"
+grep -q 'Install-HexSecDotfiles' "$ROOT/lib/Dotfiles.ps1" && pass "Install-HexSecDotfiles" || fail_msg "Install-HexSecDotfiles"
+grep -q 'Merge-HexSecWindowsTerminalSettings' "$ROOT/lib/Dotfiles.ps1" && pass "WT merge function" || fail_msg "WT merge"
+grep -q 'NIGHT CITY' "$ROOT/configs/dotfiles/night-city.omp.json" && pass "Night City theme" || fail_msg "Night City theme"
+grep -q 'HEXSEC_IDENTITY' "$ROOT/configs/dotfiles/Microsoft.PowerShell_profile.ps1" && pass "profile identity" || fail_msg "profile identity"
+grep -q 'oh-my-posh init pwsh' "$ROOT/configs/dotfiles/Microsoft.PowerShell_profile.ps1" && pass "omp init in profile" || fail_msg "omp init"
+grep -q 'FCEE0A' "$ROOT/configs/dotfiles/night-city.omp.json" && pass "Night City chrome color" || fail_msg "theme colors"
+grep -q '1E1E22' "$ROOT/configs/dotfiles/windows-terminal-night-city.json" && pass "WT Ghostty background" || fail_msg "WT bg"
+grep -q '00F0FF' "$ROOT/configs/dotfiles/windows-terminal-night-city.json" && pass "WT Ghostty cyan" || fail_msg "WT cyan"
+grep -q 'opacity' "$ROOT/lib/Dotfiles.ps1" && pass "WT opacity defaults" || fail_msg "WT opacity"
+
 grep -q 'Invoke-HexSecUnelevatedScript' "$ROOT/lib/Common.ps1" && pass "unelevated pip helper" || fail_msg "missing unelevated pip helper"
 grep -q 'trustlevel:0x20000' "$ROOT/lib/Common.ps1" && pass "medium-integrity de-elevation" || fail_msg "missing runas trustlevel"
 grep -q 'uv tool install' "$ROOT/lib/Common.ps1" && pass "uv tool install for pip:*" || fail_msg "missing uv tool install"
+grep -q 'Install-HexSecUserScopeCli' "$ROOT/lib/Common.ps1" && pass "user-scope CLI helper" || fail_msg "missing user-scope CLI helper"
+grep -q 'Anthropic.ClaudeCode' "$ROOT/lib/Common.ps1" && grep -q 'OpenAI.Codex' "$ROOT/lib/Common.ps1" \
+  && pass "Claude Code + Codex user-scope list" || fail_msg "Claude/Codex not in user-scope list"
+grep -q 'claude.ai/install.ps1' "$ROOT/lib/Common.ps1" && pass "Claude native fallback" || fail_msg "Claude native fallback missing"
+grep -q "@openai/codex" "$ROOT/lib/Common.ps1" && pass "Codex npm fallback" || fail_msg "Codex npm fallback missing"
 
 for need in Wampserver.Wampserver MongoDB.Server PostgreSQL.PostgreSQL.16; do
   grep -q "$need" "$ROOT/configs/packages/databases.txt" && pass "databases has $need" || fail_msg "databases missing $need"

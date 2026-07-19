@@ -5,6 +5,27 @@ All notable changes to **HexSec Windows** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] — 2026-07-19
+
+### Added
+
+- Windows Terminal **Night City** color scheme aligned with HexSec macOS Ghostty (`configs/dotfiles/windows-terminal-*.json`).
+- Module `dotfiles` merges scheme + profile defaults (opacity 86%, acrylic, JetBrainsMono Nerd 13) into `settings.json` and deploys a Fragments file.
+
+## [1.1.0] — 2026-07-19
+
+### Added
+
+- Module **`dotfiles`**: PowerShell 7 profile + Oh My Posh **Night City** theme (0xH3xS3C).
+- Sources under `configs/dotfiles/`; installer in `lib/Dotfiles.ps1` + `scripts/Install-Dotfiles.ps1`.
+- Docs: `docs/dotfiles/` and `docs/modules/dotfiles.md`.
+
+## [1.0.4] — 2026-07-19
+
+### Fixed
+
+- **Claude Code** (`Anthropic.ClaudeCode`) and **Codex** (`OpenAI.Codex`) install **unelevated** with `--scope user`. If winget fails, fall back to the official native installer (`claude.ai/install.ps1`) and `npm install -g @openai/codex` respectively.
+
 ## [1.0.3] — 2026-07-19
 
 ### Fixed
@@ -38,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Structure tests (`tests/test-structure.sh`).
 - Documentation: README, MODULES, PRIVACY, CONTRIBUTING, LICENSE.
 
+[1.0.4]: CHANGELOG.md
 [1.0.3]: CHANGELOG.md
 [1.0.2]: CHANGELOG.md
 [1.0.1]: CHANGELOG.md

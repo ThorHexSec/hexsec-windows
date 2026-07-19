@@ -22,6 +22,7 @@ See the root [README.md](../README.md) for the full package tables.
 | media | `scripts/Install-Media.ps1` | `configs/packages/media.txt` |
 | virt | `scripts/Install-Virt.ps1` | `configs/packages/virt.txt` |
 | gaming | `scripts/Install-Gaming.ps1` | `configs/packages/gaming.txt` |
+| dotfiles | `scripts/Install-Dotfiles.ps1` | `configs/dotfiles/` · [dotfiles docs](dotfiles/README.md) |
 
 ## Opt-in
 

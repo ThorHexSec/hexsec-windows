@@ -11,8 +11,14 @@ if (-not (Test-Path (Join-Path $script:HexSecWinRoot "configs"))) {
     }
 }
 
-$script:HexSecWinVersion = "1.0.3"
+$script:HexSecWinVersion = "1.1.1"
 $script:HexSecWinDryRun = $false
+
+# CLIs that must install into the interactive user profile (not elevated / not machine-wide).
+$script:HexSecUserScopeWingetIds = @(
+    "Anthropic.ClaudeCode",
+    "OpenAI.Codex"
+)
 
 function Write-HexSecInfo {
     param([string]$Message)
@@ -90,6 +96,11 @@ function Install-HexSecWingetPackage {
         return
     }
 
+    if ($script:HexSecUserScopeWingetIds -contains $Id) {
+        Install-HexSecUserScopeCli -Id $Id
+        return
+    }
+
     if ($script:HexSecWinDryRun) {
         Write-HexSecInfo "[dry-run] winget install --id $Id -e --accept-package-agreements --accept-source-agreements"
         return
@@ -100,6 +111,9 @@ function Install-HexSecWingetPackage {
         "install", "--id", $Id, "-e", "--accept-package-agreements",
         "--accept-source-agreements", "--disable-interactivity"
     )
+    if (Test-HexSecAdmin) {
+        $args += @("--scope", "machine")
+    }
     if ($Source) {
         $args += @("--source", $Source)
     }
@@ -112,6 +126,83 @@ function Install-HexSecWingetPackage {
         return
     }
     Write-HexSecWarn "winget exit $code for $Id (continuing)"
+}
+
+function Test-HexSecWingetSuccess {
+    param([int]$Code)
+    # 0 success · -1978335189 already installed · -1978335135 no newer package / up to date variants vary by client
+    return ($Code -eq 0 -or $Code -eq -1978335189)
+}
+
+function Install-HexSecUserScopeCli {
+    <#
+    .SYNOPSIS
+      Install Claude Code / Codex for the interactive user (unelevated).
+      Winget as Administrator often skips or misplaces these portable/user CLIs.
+    #>
+    param([Parameter(Mandatory)][string]$Id)
+
+    if ($script:HexSecWinDryRun) {
+        Write-HexSecInfo "[dry-run] (unelevated, --scope user) winget install --id $Id"
+        if ($Id -eq "Anthropic.ClaudeCode") {
+            Write-HexSecInfo "[dry-run] fallback: irm https://claude.ai/install.ps1 | iex"
+        }
+        elseif ($Id -eq "OpenAI.Codex") {
+            Write-HexSecInfo "[dry-run] fallback: npm install -g @openai/codex"
+        }
+        return
+    }
+
+    Write-HexSecInfo "$Id — installing for interactive user (unelevated, --scope user) …"
+
+    $wingetSnippet = @"
+`$ErrorActionPreference = 'Continue'
+winget install --id '$Id' -e --scope user --accept-package-agreements --accept-source-agreements --disable-interactivity --source winget
+exit `$LASTEXITCODE
+"@
+    $code = Invoke-HexSecUnelevatedScript -Content $wingetSnippet
+    if (Test-HexSecWingetSuccess -Code $code) {
+        Write-HexSecOk "$Id (user scope)"
+        return
+    }
+
+    Write-HexSecWarn "winget user-scope exit $code for $Id — trying official fallback …"
+
+    if ($Id -eq "Anthropic.ClaudeCode") {
+        $fb = @"
+`$ErrorActionPreference = 'Stop'
+irm https://claude.ai/install.ps1 | iex
+exit 0
+"@
+        $fbCode = Invoke-HexSecUnelevatedScript -Content $fb
+        if ($fbCode -eq 0) {
+            Write-HexSecOk "Anthropic.ClaudeCode (native installer)"
+            return
+        }
+        Write-HexSecWarn "Claude Code native installer exited $fbCode (continuing)"
+        return
+    }
+
+    if ($Id -eq "OpenAI.Codex") {
+        $fb = @"
+`$ErrorActionPreference = 'Stop'
+if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
+    Write-Host 'npm not found — install languages module first'
+    exit 1
+}
+npm install -g '@openai/codex'
+exit `$LASTEXITCODE
+"@
+        $fbCode = Invoke-HexSecUnelevatedScript -Content $fb
+        if ($fbCode -eq 0) {
+            Write-HexSecOk "OpenAI.Codex (npm @openai/codex)"
+            return
+        }
+        Write-HexSecWarn "Codex npm fallback exited $fbCode (continuing)"
+        return
+    }
+
+    Write-HexSecWarn "No fallback for $Id (continuing)"
 }
 
 function Install-HexSecPackageList {

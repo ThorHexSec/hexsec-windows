@@ -4,25 +4,19 @@
   HexSec Windows installer — full profile or modular modules.
 
 .DESCRIPTION
-  Entrypoint for Windows 11 Pro (HexSec Windows 1.0.3).
+  Entrypoint for Windows 11 Pro (HexSec Windows 1.1.1).
   Installs curated development tooling via winget (primary), with pip/uv only
-  when a package has no suitable winget ID. pip:* always runs unelevated
-  (interactive user). Docker Desktop is Windows-only (Hyper-V) — WSL is not used.
+  when a package has no suitable winget ID. pip:* and user-scope CLIs (Claude Code,
+  Codex) always run unelevated. Docker Desktop is Windows-only (Hyper-V) — WSL is not used.
   Full run: .\install.ps1  (or .\scripts\Install-All.ps1).
-
-.EXAMPLE
-  .\install.ps1 -DryRun
-  .\install.ps1 -Module base,shell,ides
-  .\install.ps1 -Profile developer-platform
-  .\install.ps1 -List
-  .\install.ps1 -WithGcp -WithTerraform
+  Dotfiles: PowerShell 7 + Oh My Posh + Windows Terminal Night City (Ghostty-aligned).
 #>
 [CmdletBinding()]
 param(
     [ValidateSet(
         "privacy", "base", "vcredist", "shell", "fonts", "browsers", "languages", "databases", "ides",
         "containers", "cloud-iac", "cloud-gcp", "iac-terraform",
-        "cyber", "productivity", "media", "virt", "gaming", "all"
+        "cyber", "productivity", "media", "virt", "gaming", "dotfiles", "all"
     )]
     [string[]]$Module = @(),
 
@@ -38,10 +32,11 @@ param(
 $ErrorActionPreference = "Stop"
 . "$PSScriptRoot\lib\Common.ps1"
 . "$PSScriptRoot\lib\Privacy.ps1"
+. "$PSScriptRoot\lib\Dotfiles.ps1"
 
 $CoreOrder = @(
     "privacy", "base", "vcredist", "shell", "fonts", "browsers", "languages", "databases", "ides",
-    "containers", "cloud-iac", "cyber", "productivity", "media", "virt", "gaming"
+    "containers", "cloud-iac", "cyber", "productivity", "media", "virt", "gaming", "dotfiles"
 )
 
 function Show-HexSecModules {
@@ -66,6 +61,7 @@ HexSec Windows v$script:HexSecWinVersion — modules
     media         OBS Studio, Spotify, Audacity, OpenShot
     virt          VirtualBox
     gaming        Steam, RetroArch
+    dotfiles      PowerShell 7 + Oh My Posh + Windows Terminal Night City (0xH3xS3C)
 
   OPT-IN:
     cloud-gcp       Google Cloud SDK (large)
@@ -76,12 +72,11 @@ HexSec Windows v$script:HexSecWinVersion — modules
 
 Examples:
   .\install.ps1 -DryRun
-  .\install.ps1 -Module base,shell,languages,ides
+  .\install.ps1 -Module base,shell,fonts,dotfiles
   .\install.ps1 -WithGcp -WithTerraform
 
 "@
 }
-
 if ($List) {
     Show-HexSecModules
     exit 0
@@ -115,7 +110,7 @@ if ($WithTerraform -and -not $toInstall.Contains("iac-terraform")) {
     [void]$toInstall.Add("iac-terraform")
 }
 
-$needsWinget = @($toInstall | Where-Object { $_ -ne "privacy" }).Count -gt 0
+$needsWinget = @($toInstall | Where-Object { $_ -notin @('privacy', 'dotfiles') }).Count -gt 0
 if ($needsWinget) {
     Assert-HexSecWinget
 }
@@ -128,9 +123,12 @@ foreach ($m in $toInstall) {
     if ($m -eq "privacy") {
         Invoke-HexSecPrivacyHardening
     }
+    elseif ($m -eq "dotfiles") {
+        Install-HexSecDotfiles
+    }
     else {
         Install-HexSecPackageList -Name $m
     }
 }
 
-Write-HexSecOk "Done. Review README.md for post-install steps (PATH, Docker reboot, Oh My Posh init, privacy sign-out)."
+Write-HexSecOk "Done. Open a new pwsh session for Oh My Posh. See README.md / docs/dotfiles/."
