@@ -4,7 +4,7 @@
   HexSec Windows installer — full profile or modular modules.
 
 .DESCRIPTION
-  Entrypoint for Windows 11 Pro (HexSec Windows 1.2.0).
+  Entrypoint for Windows 11 Pro (HexSec Windows 1.2.1).
   Installs curated development tooling via winget (primary), with pip/uv only
   when a package has no suitable winget ID. pip:* and user-scope CLIs (Claude Code,
   Codex) always run unelevated. Docker Desktop is Windows-only (Hyper-V) — WSL is not used.
@@ -57,7 +57,7 @@ HexSec Windows v$script:HexSecWinVersion — modules
     containers    Docker Desktop (Windows-only / Hyper-V — no WSL), kubectl, helm, k9s, kind, OpenLens, …
     cloud-iac     AWS CLI, Azure CLI, doctl, cloudflared, OpenTofu, Packer, checkov, Ansible (pip)
     cyber         Wireshark, nmap, Trivy, gitleaks, Burp Community, mitmproxy
-    productivity  Obsidian, draw.io, DBeaver, Discord, AnyDesk, Proton Pass, Proton VPN, Lightshot
+    productivity  Obsidian, draw.io, DBeaver, Yaak, Discord, AnyDesk, Windows App, Proton Pass/VPN, Lightshot
     media         VLC, K-Lite Mega, OBS, Spotify, Audacity, OpenShot
     virt          VirtualBox
     gaming        Steam, RetroArch

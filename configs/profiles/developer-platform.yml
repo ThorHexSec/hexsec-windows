@@ -3,7 +3,7 @@
 # Docker Desktop is Windows-only (Hyper-V). WSL is not part of this profile.
 
 name: developer-platform
-version: "1.2.0"
+version: "1.2.1"
 description: >
   Windows 11 Pro developer workstation. Modular modules or full install.
   Docker Desktop runs without WSL (Windows / Hyper-V backend).
@@ -38,4 +38,4 @@ notes:
   - Docker Desktop requires Hyper-V / virtualization — WSL is not used.
   - Dotfiles: PowerShell 7 + Starship Night City + Windows Terminal (configs/dotfiles/).
   - Claude Code and Codex install unelevated (--scope user) with official fallbacks.
-  - Version: 1.2.0 (Semantic Versioning).
+  - Version: 1.2.1 (Semantic Versioning).

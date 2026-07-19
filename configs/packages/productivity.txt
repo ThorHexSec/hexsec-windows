@@ -1,13 +1,14 @@
-# HexSec Windows — productivity, security apps, chat
+# HexSec Windows — productivity, security apps, chat, remote desktop
 # Office suite: Microsoft Office / Microsoft 365 (user-managed — not installed here).
-# SQL GUI: DBeaver Community.
+# SQL GUI: DBeaver Community. API client: Yaak.
 
 Obsidian.Obsidian
 JGraph.Draw
 DBeaver.DBeaver.Community
+Yaak.app
 Discord.Discord
 AnyDeskSoftwareGmbH.AnyDesk
+Microsoft.WindowsApp
 Proton.ProtonPass
 ProtonVPN.ProtonVPN
 Skillbrains.Lightshot
-# Yaak — optional API client: https://yaak.app

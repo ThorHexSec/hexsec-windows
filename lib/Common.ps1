@@ -11,13 +11,24 @@ if (-not (Test-Path (Join-Path $script:HexSecWinRoot "configs"))) {
     }
 }
 
-$script:HexSecWinVersion = "1.2.0"
+$script:HexSecWinVersion = "1.2.1"
 $script:HexSecWinDryRun = $false
 
-# CLIs that must install into the interactive user profile (not elevated / not machine-wide).
+# Apps that must install into the interactive user profile (not elevated / not machine-wide).
 $script:HexSecUserScopeWingetIds = @(
     "Anthropic.ClaudeCode",
-    "OpenAI.Codex"
+    "OpenAI.Codex",
+    "Spotify.Spotify",
+    "Yaak.app"
+)
+
+# Do not pass --scope machine — forces reinstall/uninstall when an existing
+# user-scope copy is present (notably Microsoft.PowerShell).
+$script:HexSecNoMachineScopeWingetIds = @(
+    "Microsoft.PowerShell",
+    "Microsoft.WindowsApp",
+    "Spotify.Spotify",
+    "Yaak.app"
 )
 
 function Write-HexSecInfo {
@@ -84,6 +95,53 @@ function Read-HexSecPackageList {
         Where-Object { $_ -ne "" }
 }
 
+function Test-HexSecWingetPackageInstalled {
+    <#
+    .SYNOPSIS
+      Returns $true when winget already has the exact package ID installed.
+      Also treats Microsoft.PowerShell as installed when pwsh is on PATH.
+    #>
+    param([Parameter(Mandatory)][string]$Id)
+
+    if ($Id -eq "Microsoft.PowerShell") {
+        if (Get-Command pwsh -ErrorAction SilentlyContinue) {
+            return $true
+        }
+    }
+
+    if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
+        return $false
+    }
+
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $raw = & winget list --id $Id -e --disable-interactivity --accept-source-agreements 2>&1 | Out-String
+        $code = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $prev
+    }
+
+    if ($raw -match '(?i)No installed package found') {
+        return $false
+    }
+    # winget list prints a table; require the exact ID on a data line
+    if ($code -eq 0 -and ($raw -match ("(?m)^\s*" + [regex]::Escape($Id) + "\b") -or $raw -match ("\s" + [regex]::Escape($Id) + "\s"))) {
+        return $true
+    }
+    return $false
+}
+
+function Test-HexSecWingetSuccess {
+    param([int]$Code)
+    # 0 success
+    # -1978335189 (0x8A15002B) already installed
+    # -1978335135 (0x8A150061) no applicable upgrade / no newer version
+    # -1978335212 (0x8A150014) no packages found matching (treat via list check separately)
+    return ($Code -eq 0 -or $Code -eq -1978335189 -or $Code -eq -1978335135)
+}
+
 function Install-HexSecWingetPackage {
     param(
         [Parameter(Mandatory)][string]$Id,
@@ -102,7 +160,18 @@ function Install-HexSecWingetPackage {
     }
 
     if ($script:HexSecWinDryRun) {
-        Write-HexSecInfo "[dry-run] winget install --id $Id -e --accept-package-agreements --accept-source-agreements"
+        if (Test-HexSecWingetPackageInstalled -Id $Id) {
+            Write-HexSecInfo "[dry-run] skip $Id (already installed)"
+        }
+        else {
+            Write-HexSecInfo "[dry-run] winget install --id $Id -e --accept-package-agreements --accept-source-agreements"
+        }
+        return
+    }
+
+    # Idempotent: never reinstall / never force scope changes that uninstall existing copies
+    if (Test-HexSecWingetPackageInstalled -Id $Id) {
+        Write-HexSecOk "$Id (already installed — skipped)"
         return
     }
 
@@ -111,7 +180,9 @@ function Install-HexSecWingetPackage {
         "install", "--id", $Id, "-e", "--accept-package-agreements",
         "--accept-source-agreements", "--disable-interactivity"
     )
-    if (Test-HexSecAdmin) {
+    # Avoid --scope machine for packages that uninstall/reinstall when scope differs
+    # (notably Microsoft.PowerShell). Let winget use the package default.
+    if ((Test-HexSecAdmin) -and ($script:HexSecNoMachineScopeWingetIds -notcontains $Id)) {
         $args += @("--scope", "machine")
     }
     if ($Source) {
@@ -120,36 +191,44 @@ function Install-HexSecWingetPackage {
 
     & winget @args
     $code = $LASTEXITCODE
-    # 0 = success, -1978335189 (0x8A15002B) = already installed
-    if ($code -eq 0 -or $code -eq -1978335189) {
+    if (Test-HexSecWingetSuccess -Code $code) {
         Write-HexSecOk "$Id"
+        return
+    }
+    # Race: installed between list and install
+    if (Test-HexSecWingetPackageInstalled -Id $Id) {
+        Write-HexSecOk "$Id (already installed — skipped)"
         return
     }
     Write-HexSecWarn "winget exit $code for $Id (continuing)"
 }
 
-function Test-HexSecWingetSuccess {
-    param([int]$Code)
-    # 0 success · -1978335189 already installed · -1978335135 no newer package / up to date variants vary by client
-    return ($Code -eq 0 -or $Code -eq -1978335189)
-}
-
 function Install-HexSecUserScopeCli {
     <#
     .SYNOPSIS
-      Install Claude Code / Codex for the interactive user (unelevated).
-      Winget as Administrator often skips or misplaces these portable/user CLIs.
+      Install user-scoped apps (Claude Code, Codex, Spotify, Yaak) unelevated.
+      Winget as Administrator often skips, fails, or misplaces these packages.
     #>
     param([Parameter(Mandatory)][string]$Id)
 
     if ($script:HexSecWinDryRun) {
-        Write-HexSecInfo "[dry-run] (unelevated, --scope user) winget install --id $Id"
-        if ($Id -eq "Anthropic.ClaudeCode") {
-            Write-HexSecInfo "[dry-run] fallback: irm https://claude.ai/install.ps1 | iex"
+        if (Test-HexSecWingetPackageInstalled -Id $Id) {
+            Write-HexSecInfo "[dry-run] skip $Id (already installed)"
         }
-        elseif ($Id -eq "OpenAI.Codex") {
-            Write-HexSecInfo "[dry-run] fallback: npm install -g @openai/codex"
+        else {
+            Write-HexSecInfo "[dry-run] (unelevated, --scope user) winget install --id $Id"
+            if ($Id -eq "Anthropic.ClaudeCode") {
+                Write-HexSecInfo "[dry-run] fallback: irm https://claude.ai/install.ps1 | iex"
+            }
+            elseif ($Id -eq "OpenAI.Codex") {
+                Write-HexSecInfo "[dry-run] fallback: npm install -g @openai/codex"
+            }
         }
+        return
+    }
+
+    if (Test-HexSecWingetPackageInstalled -Id $Id) {
+        Write-HexSecOk "$Id (already installed — skipped)"
         return
     }
 
@@ -163,6 +242,10 @@ exit `$LASTEXITCODE
     $code = Invoke-HexSecUnelevatedScript -Content $wingetSnippet
     if (Test-HexSecWingetSuccess -Code $code) {
         Write-HexSecOk "$Id (user scope)"
+        return
+    }
+    if (Test-HexSecWingetPackageInstalled -Id $Id) {
+        Write-HexSecOk "$Id (already installed — skipped)"
         return
     }
 

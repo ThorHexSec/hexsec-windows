@@ -1,5 +1,6 @@
 # HexSec Windows — base (core CLI + terminal + archives + password manager)
 # Prompt: Starship (Night City) — Oh My Posh kept as optional fallback theme pack
+# Microsoft.PowerShell: install once; skip if already present (never force --scope machine).
 
 Git.Git
 GitHub.cli

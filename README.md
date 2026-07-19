@@ -5,7 +5,7 @@ It provisions a reproducible **developer / SRE workstation** — full profile or
 
 | | |
 |---|---|
-| **Version** | **1.2.0** |
+| **Version** | **1.2.1** |
 | **Target OS** | Windows 11 Pro |
 | **Package managers** | winget (primary) · pip (only when winget has no suitable package) |
 | **Automation** | PowerShell (primary) · Ansible adapter (optional) |
@@ -315,8 +315,10 @@ Even when the installer runs **as Administrator**, these tools are installed **u
 | Obsidian | `Obsidian.Obsidian` |
 | draw.io | `JGraph.Draw` |
 | DBeaver Community | `DBeaver.DBeaver.Community` |
+| Yaak | `Yaak.app` | API client (user-scope) |
 | Discord | `Discord.Discord` |
 | AnyDesk | `AnyDeskSoftwareGmbH.AnyDesk` |
+| Windows App | `Microsoft.WindowsApp` | Azure VD / Windows 365 / RDP |
 | Proton Pass | `Proton.ProtonPass` |
 | Proton VPN | `ProtonVPN.ProtonVPN` |
 | Lightshot | `Skillbrains.Lightshot` |
@@ -326,7 +328,6 @@ Even when the installer runs **as Administrator**, these tools are installed **u
 | Tool | Notes |
 |------|-------|
 | Microsoft Office / Microsoft 365 | Install with your Microsoft or company license |
-| Yaak | Optional API client — [yaak.app](https://yaak.app) |
 
 ### 14. `media`
 
@@ -335,7 +336,7 @@ Even when the installer runs **as Administrator**, these tools are installed **u
 | VLC | `VideoLAN.VLC` |
 | K-Lite Codec Pack Mega | `CodecGuide.K-LiteCodecPack.Mega` |
 | OBS Studio | `OBSProject.OBSStudio` |
-| Spotify | `Spotify.Spotify` |
+| Spotify | `Spotify.Spotify` | User-scope install (unelevated) |
 | Audacity | `Audacity.Audacity` |
 | OpenShot | `OpenShot.OpenShot` |
 
@@ -402,7 +403,7 @@ hexsec-windows/
 
 4. Start **WampServer** when you need Apache/MySQL/PHP. Confirm MongoDB and PostgreSQL services if applicable.
 5. Sign in to Bitwarden, Steam, browsers, and IDEs as needed.
-6. Install **Microsoft Office** and **Yaak** manually if you use them.
+6. Install **Microsoft Office** manually if you use it.
 7. In Docker Desktop settings, keep the **WSL 2 based engine** disabled — this profile is Windows / Hyper-V only.
 
 ---

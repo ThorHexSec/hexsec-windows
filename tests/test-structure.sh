@@ -8,8 +8,8 @@ pass() { echo "PASS  $1"; ok=$((ok + 1)); }
 fail_msg() { echo "FAIL  $1"; fail=$((fail + 1)); }
 
 [[ -f "$ROOT/install.ps1" ]] && pass "install.ps1" || fail_msg "install.ps1"
-grep -q 'HexSecWinVersion = "1.2.0"' "$ROOT/lib/Common.ps1" && pass "version 1.2.0" || fail_msg "version not 1.2.0"
-grep -q '\*\*1.2.0\*\*' "$ROOT/README.md" && pass "README version 1.2.0" || fail_msg "README version"
+grep -q 'HexSecWinVersion = "1.2.1"' "$ROOT/lib/Common.ps1" && pass "version 1.2.1" || fail_msg "version not 1.2.1"
+grep -q '\*\*1.2.1\*\*' "$ROOT/README.md" && pass "README version 1.2.1" || fail_msg "README version"
 [[ -f "$ROOT/CHANGELOG.md" ]] && pass "CHANGELOG.md" || fail_msg "CHANGELOG.md"
 grep -qi 'no WSL\|Windows-only\|Hyper-V' "$ROOT/README.md" && pass "Docker Windows-only docs" || fail_msg "missing Docker Windows-only note"
 ! grep -q 'EnableWsl' "$ROOT/install.ps1" && pass "EnableWsl removed" || fail_msg "EnableWsl still present"
@@ -104,6 +104,17 @@ if grep -qE '^MongoDB\.Compass$' "$ROOT/configs/packages/databases.txt"; then
 else
   pass "no non-Community Compass ID"
 fi
+
+grep -q 'Test-HexSecWingetPackageInstalled' "$ROOT/lib/Common.ps1" && pass "winget already-installed check" || fail_msg "missing installed check"
+grep -q 'HexSecNoMachineScopeWingetIds' "$ROOT/lib/Common.ps1" && pass "no machine-scope list" || fail_msg "missing no-machine-scope"
+grep -q 'Microsoft.PowerShell' "$ROOT/lib/Common.ps1" && grep -q 'HexSecNoMachineScopeWingetIds' "$ROOT/lib/Common.ps1" \
+  && pass "PowerShell no machine scope" || fail_msg "PowerShell still forced machine scope"
+grep -q 'Yaak.app' "$ROOT/configs/packages/productivity.txt" && pass "Yaak" || fail_msg "Yaak missing"
+grep -q 'Microsoft.WindowsApp' "$ROOT/configs/packages/productivity.txt" && pass "Windows App" || fail_msg "Windows App missing"
+grep -q 'Spotify.Spotify' "$ROOT/configs/packages/media.txt" && pass "Spotify" || fail_msg "Spotify missing"
+grep -q 'Spotify.Spotify' "$ROOT/lib/Common.ps1" && grep -q 'Yaak.app' "$ROOT/lib/Common.ps1" \
+  && pass "Spotify+Yaak user-scope" || fail_msg "Spotify/Yaak not user-scope"
+grep -q '^Microsoft.PowerShell$' "$ROOT/configs/packages/base.txt" && pass "PowerShell exact ID" || fail_msg "PowerShell ID"
 
 grep -q 'Invoke-HexSecUnelevatedScript' "$ROOT/lib/Common.ps1" && pass "unelevated pip helper" || fail_msg "missing unelevated pip helper"
 grep -q 'trustlevel:0x20000' "$ROOT/lib/Common.ps1" && pass "medium-integrity de-elevation" || fail_msg "missing runas trustlevel"

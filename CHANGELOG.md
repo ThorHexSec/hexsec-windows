@@ -5,6 +5,18 @@ All notable changes to **HexSec Windows** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] — 2026-07-19
+
+### Added
+
+- Productivity: **Yaak** (`Yaak.app`), **Windows App** (`Microsoft.WindowsApp`).
+- Spotify and Yaak install **unelevated** (`--scope user`) so elevated winget succeeds reliably.
+
+### Fixed
+
+- **Microsoft.PowerShell** no longer forced with `--scope machine` (that caused uninstall/reinstall loops).
+- All winget packages: skip when already installed (`winget list` / `pwsh` on PATH for PowerShell 7) before calling `winget install`.
+
 ## [1.2.0] — 2026-07-19
 
 ### Added

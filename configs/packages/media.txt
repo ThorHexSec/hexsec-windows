@@ -1,4 +1,5 @@
 # HexSec Windows — media & creative tools
+# Spotify installs unelevated (--scope user); elevated winget often fails.
 
 VideoLAN.VLC
 CodecGuide.K-LiteCodecPack.Mega
